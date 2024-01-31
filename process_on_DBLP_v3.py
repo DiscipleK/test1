@@ -1,5 +1,7 @@
 import numpy as np
 from MyDataset import DBLPDataset
+import time
+
 
 # 实例化DBLP数据集
 dataset = DBLPDataset()
@@ -75,12 +77,14 @@ def build_paths_recursively(graph, current_ntype, current_node_id, etypes_sequen
         # 回溯：移除最后一个节点，以便尝试下一个邻居
         current_path.pop()
 
+start_time = time.time()
 # 映射原图节点到唯一ID上，并创建反向映射的字典。正向映射为：{唯一ID：[原始ID，节点类型]}，反向映射为:{(原始ID，节点类型):唯一ID}
 unique_id_mapping, reverse_mapping = map_vertex_ID_optimized(g)
 metapaths_dict = get_metapath_dict(dataset)
 metapaths_dict_test = {'AP': [('author', 'author-paper', 'paper')],'APA': [('author', 'author-paper', 'paper'), ('paper', 'paper-author', 'author')]}
-metapath_instances_dict = build_metapath_instances(g, metapaths_dict, unique_id_mapping, reverse_mapping)
-
+metapath_instances_dict = build_metapath_instances(g, metapaths_dict_test, unique_id_mapping, reverse_mapping)
+end_time = time.time()
+print("运行时间:", end_time - start_time, "秒")
 # 打印全部元路径实例的长度
-for key in metapaths_dict:
-    print("{key}元路径实例的数量:", len(metapath_instances_dict[key]))
+for key in metapaths_dict_test:
+    print(f"{key}元路径实例的数量:", len(metapath_instances_dict[key]))
